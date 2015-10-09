@@ -16,6 +16,7 @@ PKG_CHECK_MODULES([MODBUS],[libmodbus])
 PKG_CHECK_MODULES([BACNET], [libbacnet])
 AC_CONFIG_FILES([
     Makefile
+    scripts/Makefile
     src/Makefile
 ])
 
