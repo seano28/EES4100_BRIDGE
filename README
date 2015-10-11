@@ -1,6 +1,9 @@
 Please note: 
-This projet has been developed as an assessment for an undergraduate unit: EES4100 - Operating Systems and Network Programming at Victoria University,Melbourne, Australia. It was created only for eductaional purposes. 
+This projet has been developed as an assessment for an undergraduate unit: 
+EES4100 - Operating Systems and Network Programming at Victoria University,
+Melbourne, Australia. It was created only for educational purposes. 
 
-The project consists of a bridge application, whereby data is read from a Modbus server and re transmitted to a 
-BACnet client. To achieve this the application simultaneously operates as both a Modbus client and BACnet server 
+The project consists of a bridge application, whereby data is read from a 
+Modbus server and re transmitted to a BACnet client. To achieve this the 
+application simultaneously operates as both a Modbus client and BACnet server 
 in seperate threads. 
