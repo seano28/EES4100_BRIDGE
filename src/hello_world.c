@@ -225,26 +225,26 @@ int modbus (void){
 }
 
 int main(int argc, char **argv) {
-uint8_t rx_buf[bacnet_MAX_MPDU];
-uint16_t pdu_len;
-BACNET_ADDRESS src;
-pthread_t minute_tick_id, second_tick_id;
-bacnet_Device_Set_Object_Instance_Number(BACNET_INSTANCE_NO);
-bacnet_address_init();
-/* Setup device objects */
-bacnet_Device_Init(server_objects);
-BN_UNC(WHO_IS, who_is);
-BN_CON(READ_PROPERTY, read_property);
-bacnet_BIP_Debug = true;
-bacnet_bip_set_port(htons(BACNET_PORT));
-bacnet_datalink_set(BACNET_DATALINK_TYPE);
-bacnet_datalink_init(BACNET_INTERFACE);
-atexit(bacnet_datalink_cleanup);
-memset(&src, 0, sizeof(src));
-register_with_bbmd();
-bacnet_Send_I_Am(bacnet_Handler_Transmit_Buffer);
-pthread_create(&minute_tick_id, 0, minute_tick, NULL);
-pthread_create(&second_tick_id, 0, second_tick, NULL);
+	uint8_t rx_buf[bacnet_MAX_MPDU];
+	uint16_t pdu_len;
+	BACNET_ADDRESS src;
+	pthread_t minute_tick_id, second_tick_id;
+	bacnet_Device_Set_Object_Instance_Number(BACNET_INSTANCE_NO);
+	bacnet_address_init();
+	/* Setup device objects */
+	bacnet_Device_Init(server_objects);
+	BN_UNC(WHO_IS, who_is);
+	BN_CON(READ_PROPERTY, read_property);
+	bacnet_BIP_Debug = true;
+	bacnet_bip_set_port(htons(BACNET_PORT));
+	bacnet_datalink_set(BACNET_DATALINK_TYPE);
+	bacnet_datalink_init(BACNET_INTERFACE);
+	atexit(bacnet_datalink_cleanup);
+	memset(&src, 0, sizeof(src));
+	register_with_bbmd();
+	bacnet_Send_I_Am(bacnet_Handler_Transmit_Buffer);
+	pthread_create(&minute_tick_id, 0, minute_tick, NULL);
+	pthread_create(&second_tick_id, 0, second_tick, NULL);
 
 /* Start another thread here to retrieve your allocated registers from the
 * modbus server. This thread should have the following structure (in a
