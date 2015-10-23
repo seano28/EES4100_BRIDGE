@@ -198,7 +198,8 @@ static void ms_tick(void) {
 			bacnet_handler_##handler)
 
 int modbus (void){
-	printf("in modbus\n");
+	modbus_start:
+	printf("modbus connection started\n");
 	modbus_t *ctx;
 //	uint16_t tab_reg[64];
 	int rc;
@@ -209,30 +210,31 @@ int modbus (void){
 	if (modbus_connect(ctx) == -1) {
 	fprintf(stderr, "Connection failed: %s\n", modbus_strerror(errno));
 	modbus_free(ctx);
+	sleep(1);
+	goto modbus_start;// error checking, returns the start of function to re-establish connection if failure occurs
 	return -1;
 	}
 	while(1){
 
 		rc = modbus_read_registers(ctx, 26, 2, tab_reg);
+		
+		for (i=0; i < rc; i++) {
+		printf("reg[%d]=%d (0x%X)\n", i, tab_reg[i], tab_reg[i]);
+		}
+
 		if (rc == -1) {
-		fprintf(stderr, "%s\n", modbus_strerror		(errno));																		                   return -1;
+		fprintf(stderr, "modbus connection failed: %s\n", modbus_strerror(errno));
+		modbus_free(ctx);
+		sleep(1);
+		goto modbus_start;// error checking, returns the start of function to re-establish connection if failure occurs
 	   	}
 
-		for (i=0; i < rc; i++) {
-	      	printf("reg[%d]=%d (0x%X)\n", i, tab_reg[i], tab_reg[i]);
-        
-	     	}
-		
-																							   
-		modbus_close(ctx);			
- 
-		modbus_free(ctx);
-
-		}// end while
+	}// end while
 
 }//end void modbus
 
 int main(int argc, char **argv) {
+	//pthread_t modbus;// creating errors?
 	uint8_t rx_buf[bacnet_MAX_MPDU];
 	uint16_t pdu_len;
 	BACNET_ADDRESS src;
@@ -253,19 +255,8 @@ int main(int argc, char **argv) {
 	bacnet_Send_I_Am(bacnet_Handler_Transmit_Buffer);
 	pthread_create(&minute_tick_id, 0, minute_tick, NULL);
 	pthread_create(&second_tick_id, 0, second_tick, NULL);
-//	pthread_create(&modbus_id, 0, modbus, NULL);
+//	pthread_create(&modbus_id, 0, modbus, NULL);//causing errors during "make"??
 
-/* Start another thread here to retrieve your allocated registers from the
-* modbus server. This thread should have the following structure (in a
-* separate function):
-*
-* Initialise:
-* Connect to the modbus server
-*
-* Loop:
-* Read the required number of registers from the modbus server
-* Store the register data into the tail of a linked list
-*/
 
 while (1) {
 	pdu_len = bacnet_datalink_receive(
